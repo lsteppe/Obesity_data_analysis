@@ -18,6 +18,7 @@ data = pd.read_csv(file_path)
 
 data.head()
 
+#Clean the data
 data.describe(include = 'all')
 
 data.drop(['YearEnd', 'Data_Value_Unit'], axis = 1, inplace = True)
@@ -31,6 +32,7 @@ datanew.isnull().sum()
 
 datanew.describe(include = 'all')
 
+#Extract the data for income and physical activity only
 datanew.reset_index(drop = True, inplace= True)
 selected_columns = datanew[['Question', 'Data_Value', 'StratificationCategory1', 'Stratification1']]
 filtered_df = selected_columns[selected_columns['Question'].str.contains('activit', case=False, regex=True)]
@@ -40,17 +42,14 @@ grouped_data = filter3.groupby(['Question', 'Stratification1'])['Data_Value'].me
 grouped_data.sort_values('Stratification1', inplace=True)
 print(grouped_data)
 
-#Visualizing the data
-# Get a list of unique questions
+# Visualizing the data
+# Sets up the size of the figure so it fits the screen
 unique_questions = grouped_data['Question'].unique()
-
-# Consider using fewer rows per figure if there are many unique questions
 n_rows = 2
 n_cols = 3
+plt.figure(figsize=(12, 8))
 
-# Slightly larger figure size
-plt.figure(figsize=(12, 8))  # Adjusted for better spacing
-
+# Loop through each of datasets for the unique questions and build a separate barplot
 for i, question in enumerate(unique_questions):
     ax = plt.subplot(n_rows, n_cols, i + 1)
     data_to_plot = grouped_data[grouped_data['Question'] == question]
